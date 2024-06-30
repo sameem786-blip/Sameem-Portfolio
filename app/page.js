@@ -11,7 +11,7 @@ import Skills from "./components/homepage/skills";
 async function getData() {
 
   //https://medium.com/feed/@yourhandle
-  const res = await fetch(`https://dev.to/api/articles?username=${personalData.devUsername}`)
+  const res = await fetch(`https://v1.nocodeapi.com/changazi786/medium/kjgIyAWejMYiWiWu`)
 
   if (!res.ok) {
     throw new Error('Failed to fetch data')

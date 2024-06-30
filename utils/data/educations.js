@@ -2,7 +2,7 @@ export const educations = [
   {
     id: 1,
     title: "BS(Computer Science)",
-    duration: "2019 - 2024",
+    duration: "2019 - 2023",
     institution: "DHA Suffa Univeristy, Karachi, Pakistan",
   },
   {
