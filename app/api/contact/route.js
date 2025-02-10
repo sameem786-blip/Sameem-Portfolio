@@ -1,16 +1,17 @@
-import axios from 'axios';
+import axios from "axios";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
   const payload = await request.json();
-  const token = '7436197427:AAGQoE8-utX2zDrRJvBO_w-5ziAXW1DZC2Y';
-  const chat_id = '-4166994678';
+  const token = process.env.TELEGRAM_BOT_TOKEN; // Move token to .env file
+  const chat_id = process.env.TELEGRAM_CHAT_ID; // Move chat ID to .env file
 
   if (!token || !chat_id) {
-    return NextResponse.json({
-      success: false,
-    }, { status: 200 });
-  };
+    return NextResponse.json(
+      { success: false, message: "Missing bot token or chat ID" },
+      { status: 400 }
+    );
+  }
 
   try {
     const url = `https://api.telegram.org/bot${token}/sendMessage`;
@@ -18,20 +19,20 @@ export async function POST(request) {
 
     const res = await axios.post(url, {
       text: message,
-      chat_id: process.env.TELEGRAM_CHAT_ID
+      chat_id: chat_id, // Use the correct variable
     });
 
     if (res.data.ok) {
-      return NextResponse.json({
-        success: true,
-        message: "Message sent successfully!",
-      }, { status: 200 });
-    };
+      return NextResponse.json(
+        { success: true, message: "Message sent successfully!" },
+        { status: 200 }
+      );
+    }
   } catch (error) {
-    console.log(error.response.data)
-    return NextResponse.json({
-      message: "Message sending failed!",
-      success: false,
-    }, { status: 500 });
+    console.error("Telegram API Error:", error?.response?.data || error);
+    return NextResponse.json(
+      { success: false, message: "Message sending failed!" },
+      { status: 500 }
+    );
   }
-};
+}
