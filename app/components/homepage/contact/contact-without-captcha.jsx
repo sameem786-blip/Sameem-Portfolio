@@ -21,35 +21,42 @@ function ContactWithoutCaptcha() {
   };
 
   const handleSendMail = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Only call once
+    console.log("Function called");
+
+    // Validate input fields
     if (!userInput.email || !userInput.message || !userInput.name) {
-      setError({ ...error, required: true });
+      setError((prevError) => ({ ...prevError, required: true }));
+      console.log("Validation failed: missing fields");
       return;
     } else if (error.email) {
+      console.log("Validation failed: invalid email");
       return;
     } else {
-      setError({ ...error, required: false });
+      setError((prevError) => ({ ...prevError, required: false }));
     }
 
     try {
-      e.preventDefault();
-      setStatus("Sending...");
+      console.log("Sending message...", userInput);
 
-      const res = await fetch("/api/sendMessage", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(userInput), // Use userInput instead of formData
       });
 
       const data = await res.json();
+      console.log("Response from server:", data);
+
       if (data.success) {
-        setStatus("✅ Message sent successfully!");
-        setFormData({ name: "", email: "", message: "" });
+        setUserInput({ name: "", email: "", message: "" }); // Reset form fields
+        toast.success("Message sent succesfully.");
       } else {
-        setStatus("❌ Failed to send message.");
+        toast.error(data.message || "Message sending failed!");
       }
     } catch (error) {
-      toast.error(error?.text || error);
+      console.error("Error:", error);
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
